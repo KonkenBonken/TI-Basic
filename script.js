@@ -51,17 +51,6 @@ const data = { // http://merthsoft.com/linkguide/ti83+/tokens.html
 	'F5': 'prgm',
 	'ED': 'Disp',
 }
-function numToBuf(num, size) {
-	if (Array.isArray(num)) {
-		let b = Buffer.alloc(size || num.length);
-		let off = 0;
-		for (var n of num)
-			off += b.writeFloatLE(n, off);
-	} else {
-		let b = Buffer.alloc(size || 1);
-		b.writeFloatLE(num)
-	};
-	return b;
 
 lookup = {};
 Object.entries(data).forEach(([key, name]) => {
@@ -71,6 +60,12 @@ Object.entries(data).forEach(([key, name]) => {
 		}
 	});
 });
+function numToBuf(num, size = 1) {
+	if (Array.isArray(num))
+		return Buffer.from(num);
+
+	// console.log([num, size, num.toString(16)]);
+	return Buffer.from(num.toString(16), "hex");
 }
 
 let dataSection = [ /*Array of buffers*/ ];
