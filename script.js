@@ -62,6 +62,15 @@ function numToBuf(num, size) {
 		b.writeFloatLE(num)
 	};
 	return b;
+
+lookup = {};
+Object.entries(data).forEach(([key, name]) => {
+	Object.defineProperty(lookup, name, {
+		get: function () {
+			return Buffer.from(key, "hex")
+		}
+	});
+});
 }
 
 let dataSection = [ /*Array of buffers*/ ];
