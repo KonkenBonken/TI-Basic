@@ -50,6 +50,9 @@ const data = { // http://merthsoft.com/linkguide/ti83+/tokens.html
 	'B5': 'θ',
 	'F5': 'prgm',
 	'ED': 'Disp',
+};
+const lookup = {};
+
 function hexToBuf(hex) {
 	if (Array.isArray(hex))
 		return Buffer.concat(hex.map(numToBuf));
@@ -70,7 +73,6 @@ function numToSizedBuf(num, size) {
 	return b;
 }
 
-lookup = {};
 Object.entries(data).forEach(([key, name]) => {
 	Object.defineProperty(lookup, name, {
 		get: function () {
