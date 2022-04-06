@@ -14,7 +14,7 @@ function numToBuf(num) {
 		return Buffer.from(num);
 
 	// console.log([num, size, num.toString(16)]);
-	return Buffer.from(num.toString(16), "hex");
+	return hexToBuf(num.toString(16));
 }
 
 function numToSizedBuf(num, size) {
@@ -23,12 +23,13 @@ function numToSizedBuf(num, size) {
 	return b;
 }
 
-Object.entries(data).forEach(([key, name]) => {
-	Object.defineProperty(lookup, name, {
-		get: function () {
-			return hexToBuf(key)
-		}
-	});
+Object.entries(tokens).forEach(([hex, name]) => {
+	[...new Set([name, name.replace(/_/g, ''), name.replace(/_/g, ' ')])].forEach(n =>
+		Object.defineProperty(lookup, n, {
+			get: function () {
+				return hexToBuf(hex)
+			}
+		}));
 });
 
 
