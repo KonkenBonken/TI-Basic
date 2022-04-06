@@ -50,23 +50,35 @@ const data = { // http://merthsoft.com/linkguide/ti83+/tokens.html
 	'B5': 'θ',
 	'F5': 'prgm',
 	'ED': 'Disp',
+function hexToBuf(hex) {
+	if (Array.isArray(hex))
+		return Buffer.concat(hex.map(numToBuf));
+	return Buffer.from(hex, "hex");
 }
 
-lookup = {};
-Object.entries(data).forEach(([key, name]) => {
-	Object.defineProperty(lookup, name, {
-		get: function () {
-			return Buffer.from(key, "hex")
-		}
-	});
-});
-function numToBuf(num, size = 1) {
+function numToBuf(num) {
 	if (Array.isArray(num))
 		return Buffer.from(num);
 
 	// console.log([num, size, num.toString(16)]);
 	return Buffer.from(num.toString(16), "hex");
 }
+
+function numToSizedBuf(num, size) {
+	let b = Buffer.alloc(size);
+	b.writeFloatLE(num)
+	return b;
+}
+
+lookup = {};
+Object.entries(data).forEach(([key, name]) => {
+	Object.defineProperty(lookup, name, {
+		get: function () {
+			return hexToBuf(key)
+		}
+	});
+});
+
 
 let dataSection = [ /*Array of buffers*/ ];
 dataSection.unshift(
