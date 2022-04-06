@@ -36,9 +36,10 @@ Object.entries(tokens).forEach(([hex, name]) => {
 const header = ['2a', '2a', '54', '49', '38', '33', '46', '2a', '1a', '0a', '0a', '43', '72', '65', '61', '74', '65', '64', '20', '62', '79', '20', '54', '49', '20', '43', '6f', '6e', '6e', '65', '63', '74', '20', '43', '45', '20', '35', '2e', '36', '2e', '33', '2e', '32', '32', '37', '38', '00', '00', '00', '00', '00', '00', '00', '19', '00', '0d', '00', '08', '00', '05', '50', '52', '4f', '47', '30', '31', '00', '00', '00', '00', '08', '00']
 	.map(hexToBuf);
 
+let text = 'ABC';
 let dataSection = [
-	'Disp', '"', 'H', 'E', 'J', '"'
-].map(key => lookup[key]);
+	'Disp', '"', ...text.toUpperCase() //, '"'
+].map(key => lookup[key] || console.log(key, "doesn't exist!"));
 console.log({ dataSection });
 dataSection.unshift(
 	numToBuf(dataSection.reduce((a, b) => a + b.length, 0), 2)
@@ -56,7 +57,8 @@ buffer = Buffer.concat([
 	// Buffer.alloc(1), //Comment Delimiter
 	numToSizedBuf(dataSection.reduce((a, b) => a + b.length, 0), 2),
 	...dataSection,
-	numToSizedBuf(checksum, 2)
+	// numToSizedBuf(checksum, 2)
+	hexToBuf('2A')
 ]);
 
 
