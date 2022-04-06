@@ -83,6 +83,8 @@ Object.entries(data).forEach(([key, name]) => {
 });
 
 
+const header = ['2a', '2a', '54', '49', '38', '33', '46', '2a', '1a', '0a', '0a', '43', '72', '65', '61', '74', '65', '64', '20', '62', '79', '20', '54', '49', '20', '43', '6f', '6e', '6e', '65', '63', '74', '20', '43', '45', '20', '35', '2e', '36', '2e', '33', '2e', '32', '32', '37', '38', '00', '00', '00', '00', '00', '00', '00', '19', '00', '0d', '00', '08', '00', '05', '50', '52', '4f', '47', '30', '31', '00', '00', '00', '00', '08', '00']
+	.map(hexToBuf);
 
 let dataSection = [
 	'Disp', '"', 'H', 'E', 'J', '"'
@@ -92,17 +94,19 @@ dataSection.unshift(
 	numToBuf(dataSection.reduce((a, b) => a + b.length, 0), 2)
 )
 
+let checksum = [...header, ...dataSection.slice(1)]
+	.reduce((a, b) => a + b.readUInt8(), 0);
+console.log(checksum, numToSizedBuf(checksum, 2));
+
 buffer = Buffer.concat([
-	...['2a', '2a', '54', '49', '38', '33', '46', '2a', '1a', '0a', '0a', '43', '72', '65', '61', '74', '65', '64', '20', '62', '79', '20', '54', '49', '20', '43', '6f', '6e', '6e', '65', '63', '74', '20', '43', '45', '20', '35', '2e', '36', '2e', '33', '2e', '32', '32', '37', '38', '00', '00', '00', '00', '00', '00', '00', '19', '00', '0d', '00', '08', '00', '05', '50', '52', '4f', '47', '30', '31', /**/ '00', '00', '00', '00', '08', '00' /*, '06', '00' ,'de','2a','48','45','4a','2a','ca','03'*/ ]
-	.map(hexToBuf),
+	...header,
 
 	// numToBuf([42, 42, 84, 73, 56, 51, 70, 42, 26, 10, 0], 11), //header
 	// Buffer.alloc(42), //Comment
 	// Buffer.alloc(1), //Comment Delimiter
-	numToBuf(dataSection.reduce((a, b) => a + b.length, 0), 2),
+	numToSizedBuf(dataSection.reduce((a, b) => a + b.length, 0), 2),
 	...dataSection,
-	numToSizedBuf(dataSection.reduce((a, b) => a + b.length, 0), 2)
-	// numToBuf( /*File checksum. This is the lower 16 bits of the sum of all bytes in the data section,*/ 2)
+	numToSizedBuf(checksum, 2)
 ]);
 
 
