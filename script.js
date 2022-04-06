@@ -82,7 +82,7 @@ Object.entries(data).forEach(([key, name]) => {
 
 let dataSection = [ /*Array of buffers*/ ];
 dataSection.unshift(
-	numToBuf(dataSection.reduce((a, b) => a + b.length), 2)
+	numToBuf(dataSection.reduce((a, b) => a + b.length, 0), 2)
 )
 
 buffer = Buffer.concat([
@@ -90,8 +90,10 @@ buffer = Buffer.concat([
 	Buffer.alloc(42), //Comment
 	Buffer.alloc(1), //Comment Delimiter
 	numToBuf(dataSection.reduce((a, b) => a + b.length), 2),
+	numToBuf(dataSection.reduce((a, b) => a + b.length, 0), 2),
 	...dataSection,
-	numToBuf( /*File checksum. This is the lower 16 bits of the sum of all bytes in the data section,*/ 2)
+	numToSizedBuf(dataSection.reduce((a, b) => a + b.length, 0), 2)
+	// numToBuf( /*File checksum. This is the lower 16 bits of the sum of all bytes in the data section,*/ 2)
 ]);
 
 
