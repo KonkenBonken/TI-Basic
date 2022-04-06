@@ -80,7 +80,11 @@ Object.entries(data).forEach(([key, name]) => {
 });
 
 
-let dataSection = [ /*Array of buffers*/ ];
+
+let dataSection = [
+	'Disp', '"', 'H', 'E', 'J', '"'
+].map(key => lookup[key]);
+console.log({ dataSection });
 dataSection.unshift(
 	numToBuf(dataSection.reduce((a, b) => a + b.length, 0), 2)
 )
