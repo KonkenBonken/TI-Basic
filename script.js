@@ -70,7 +70,7 @@ function numToBuf(num) {
 
 function numToSizedBuf(num, size) {
 	let b = Buffer.alloc(size);
-	b.writeFloatLE(num)
+	b.writeIntBE(num, 0, size)
 	return b;
 }
 
